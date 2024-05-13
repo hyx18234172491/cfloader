@@ -115,6 +115,8 @@ def main():
             else:
                 [target, type] = t.split("-")
                 targets.append(Target("cf2", target, type))
+    elif sys.argv[0] == "reset-bootloader":
+        action = "reset-bootloader"
     else:
         print("Action", sys.argv[0], "unknown!")
         sys.exit(-1)
@@ -123,7 +125,7 @@ def main():
         # Initialise the bootloader lib
         bl = Bootloader(clink)
 
-        warm_boot = (boot == "reset")
+        warm_boot = (boot == "reset" or action=="reset-bootloader" )
         if warm_boot:
             print("Reset to bootloader mode ...")
             sys.stdout.flush()
@@ -158,6 +160,8 @@ def main():
                 exit_result = -1
         elif action == "reset":
             bl.reset_to_firmware()
+        elif action == "reset-bootloader":
+            bl.start_bootloader(warm_boot=warm_boot, cf=None)
         else:
             None
     except Exception as e:
